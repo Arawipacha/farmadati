@@ -1,0 +1,31 @@
+{
+    "name": "yaku/farmadati",
+    "description": "SoapClient farmadati",
+    "type": "library",
+    "require": {
+        "php": "^8.0.19"
+    },
+    "require-dev": {
+        "laravel/framework": "8.*"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Farmadati\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ricardo Miguel",
+            "email": "ubinetfone@gmail.com"
+        }
+    ],
+    "extra":{
+        "laravel": {
+            "providers": [
+                "Farmadati\\FarmadatiServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}
