@@ -33,6 +33,4 @@ class GetDataSet extends FarmaDatiSoapClient{
         return $this->GetDataSetResult;
     }
 
-
-
 }

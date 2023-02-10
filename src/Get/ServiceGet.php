@@ -12,15 +12,30 @@ use Farmadati\Get\Response\GetDataSetResult;
 use Farmadati\Get\Response\GetEnabledDataSetResult;
 use Farmadati\Get\Response\GetSchemaDataSetResult;
 use Farmadati\Get\traitBinaryFile;
-
-
+use SoapFault;
 
 class ServiceGet extends FarmaDatiSoapClient{
     
     use traitBinaryFile;
     
     public function GetEnabledDataSet(FarmadatiArgsGetEnabledSet $_argsGetEnabledDataSet): GetEnabledDataSet {
-        return new GetEnabledDataSet($this->setResult(self::getSoapClient()->GetEnabledDataSet($_argsGetEnabledDataSet))->GetEnabledDataSetResult);
+        print('arguments \n');
+       //var_dump($_argsGetEnabledDataSet);
+       try {
+        $get=parent::getSoapClient();
+        $get=$get->GetEnabledDataSet($_argsGetEnabledDataSet);
+        } catch (SoapFault $fault) {
+            print("SOAP Fault: (faultcode: {$fault->faultcode}, faultstring: {$fault->faultstring})");
+            //trigger_error("SOAP Fault: (faultcode: {$fault->faultcode}, faultstring: {$fault->faultstring})", E_USER_ERROR);
+        }
+        
+        //if (is_soap_fault($get)) {
+        //    trigger_error("SOAP Fault: (faultcode: {$get->faultcode}, faultstring: {$get->faultstring})", E_USER_ERROR);
+        //}
+        var_dump($get??null);
+        $re=$this->setResult($get)->GetEnabledDataSetResult;
+        //$re=$re->getResult();
+        return new GetEnabledDataSet($re);
     }
 
     public function GetSchemaDataSet(FarmadatiArgsGetSchemaDataSet $_argsGetSchemaDataSet): GetSchemaDataSet{

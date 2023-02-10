@@ -13,9 +13,8 @@ use Farmadati\Interfaces\FarmadatiClientInterface;
 use Illuminate\Support\Facades\DB;
 
 class Client implements FarmadatiClientInterface {
-    
-    
 
+    
     private $Username;
     private $Password;
 
@@ -53,9 +52,11 @@ class Client implements FarmadatiClientInterface {
     /**
      * return count data  by COUNT, RITORNA SOLO LA DATA AGGIORNAMENTO DEL SERVIZIO SOAP
      */
-    public function statusPartialData(): ?array{
+    public function statusPartialData($date=null): ?array{
+        if($date==null){
+            $date = $this->getDataSetChangesByMode(Mode::DATA_AGG);
+        }
         
-        $date = $this->getDataSetChangesByMode(Mode::DATA_AGG);
         $count = $this->getDataSetChangesByMode(Mode::COUNT, $date);
         $result =[
             'source'=>'GetDataSetChanges',
@@ -177,12 +178,14 @@ class Client implements FarmadatiClientInterface {
         if($xmlData->files->count()==0){
             return [];
         }
+
+        /**facciamo una richiesta delle collezione di fields a famadati */
         $schemaMap = collect($this->getFields());
         
 
         $sqlPaths= collect();
         $directory=$this->formatDateDir($xmlData->data_agg_id,'/sql');
-
+        print('init');
         if(isset($data['path'])){
             $sqlPaths=collect($this->service->generateFileSqlV2($data['path'], $directory, $table, $schemasToFields, $schemaMap));
             //array_push($sqlPaths, $values);
@@ -317,6 +320,7 @@ EOSQL
         if($this->codice!=null){
             return $this->codice;
         }
+
         $this->service->GetEnabledDataSet(new FarmadatiArgsGetEnabledSet($this->Username,$this->Password));
         
         

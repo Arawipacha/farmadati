@@ -10,13 +10,13 @@ class FarmadatiArgsGetEnabledSet extends FarmaDatiSoapClient{
 
     public function __construct(public $Username=NULL, public $Password=NULL)
     {
-        /*
+         
         parent::__construct([
             'Username'=> $Username,
             'Password'=> $Password
         ],false);
-        */
-       parent::__construct([], false); 
+         
+       //parent::__construct([], false); 
     }
 }
 

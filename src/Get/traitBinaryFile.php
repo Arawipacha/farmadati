@@ -65,7 +65,12 @@ trait traitBinaryFile{
         $values = array();
         foreach($fields as $key => $_){
             if($key=='TIPO_VAR' || $key=='DATA_VAR'){
-                $value="\"$item[$key]\"";
+                $val=$item[$key]??'';
+                //if(isset($item[$key])){
+                $value="\"$val\"";
+                    //continue;
+                //}
+                
                 array_push($values, $value);
             }else{
                 $schema=$schemaFields->firstWhere('Key',$key);
@@ -192,10 +197,12 @@ trait traitBinaryFile{
         $fields = implode(',', $arrayFields);
         //$path= env('FARMA_DIR', 'farmadati');
         $i = 0;
+        $countRow=count($rows->RECORD);
         $valuesInsert = array();
         $valuesUpdate = array();
         $paths= array();
         $aggiornato=0;
+        print('iniziando il array\n');
         foreach ($rows->RECORD as $item) {            
             // print_r(($item->TIPO_VAR));
 
@@ -216,7 +223,11 @@ trait traitBinaryFile{
             //     $i++;
             // }
             array_push($valuesInsert, $this->mapInsertXml((array) $item, $arrayFields, $schemaDataSet));
+            $i++;
+            print("Row $i / $countRow \n");
+            //if($i>100) break;
         }
+        print('caricato in memoria\n');
         
 
         if ($aggiornato == 1) {
@@ -237,7 +248,8 @@ trait traitBinaryFile{
         } else {
             // print_r($valuesInsert);
             $p = array_chunk($valuesInsert, 100000);
-
+            $i=0;
+            $countRow=count($p);
             foreach ($p as $item) {
                 // var_dump($item[4]);
                 $valuesInsert = "INSERT INTO $table($fields) VALUES \n" . implode(",\n", $item) . ";";
@@ -245,6 +257,7 @@ trait traitBinaryFile{
                 Storage::disk('local')->put($pathNew, $valuesInsert);
                 array_push($paths,$pathNew);
                 $i++;
+                print("chunk  $i / $countRow \n");
             }
 
             //  $valuesInsert = "INSERT INTO $table($fields) VALUES \n" . implode(",\n", $valuesInsert) . ";";

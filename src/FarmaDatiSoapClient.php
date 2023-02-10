@@ -1,13 +1,15 @@
 <?php
 namespace Farmadati;
 
+use Farmadati\Get\traitBinaryFile;
 use SoapClient;
 use stdClass;
 
 class FarmaDatiSoapClient extends stdClass{
-
+    use traitBinaryFile;
     //const WSDL_URL='http://webservices-farmadati.dyndns.ws/WS2/FarmadatiItaliaWebServicesM1.svc?SingleWsdl';   //"http://webservices.farmadati.it/WS2/FarmadatiItaliaWebServicesM2.svc?singleWsdl";
-    const WSDL_URL='http://webservices.farmadati.it/WS2/FarmadatiItaliaWebServicesM2.svc?singleWsdl';
+    //const WSDL_URL='http://webservices.farmadati.it/WS2/FarmadatiItaliaWebServicesM2.svc?singleWsdl';
+    const WSDL_URL='http://webservices-farmadati.dyndns.ws/WS2/FarmadatiItaliaWebServicesM2.svc?singleWsdl';
     /**
      * Soapclient called to communicate with the actual SOAP Service
      * @var SoapClient
@@ -19,12 +21,13 @@ class FarmaDatiSoapClient extends stdClass{
     public function __construct($_argsValues = array(),$_resetSoapClient= true)
     {
         if($_resetSoapClient){
-            //print_r('init soapclient');
+            print_r('init soapclient');
+            var_dump($_argsValues);
             $this->initSoapClient($_argsValues);
         }
 
-            
-        //var_dump($_argsValues);    
+        
+        
         if(is_array($_argsValues) && count($_argsValues))
         {
             foreach($_argsValues as $name=>$value)
@@ -37,12 +40,14 @@ class FarmaDatiSoapClient extends stdClass{
 
 
     public function initSoapClient(){
-            //$wsdlOptions = array();
-           // $wsdlOptions['wsdl_url'] = self::WSDL_URL;
+        //$wsdlOptions = array();
+        // $wsdlOptions['wsdl_url'] = self::WSDL_URL;
 
         // $opstion['classmap']=['GetEnabledDataSet' => 'FarmadatiStructGetEnabledDataSet'];
         $soapClientClassName= self::getSoapClientClassName();
-        self::setSoapClient(new $soapClientClassName(self::WSDL_URL)); 
+        //var_dump(new $soapClientClassName(self::WSDL_URL));
+        self::setSoapClient(new $soapClientClassName(self::WSDL_URL));
+        //self::$soapClient->__setLocation(self::WSDL_URL);
     }
 
 
@@ -53,17 +58,15 @@ class FarmaDatiSoapClient extends stdClass{
 
     public static function getSoapClientClassName()
     {
-        //if(class_exists('FarmadatiSoapClient') && is_subclass_of('FarmadatiSoapClient','SoapClient'))
-        //    return 'FarmadatiSoapClient';
-        //else
-            return 'SoapClient';
+        return 'SoapClient';
     }
 
 
 
     protected static function setSoapClient(SoapClient $_soapClient)
     {
-        return (self::$soapClient = $_soapClient);
+        $res=(self::$soapClient = $_soapClient);
+        return $res;
     }
 
 

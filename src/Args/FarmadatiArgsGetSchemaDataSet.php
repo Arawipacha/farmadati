@@ -18,7 +18,7 @@ class FarmadatiArgsGetSchemaDataSet extends FarmaDatiSoapClient{
     }
     /**
      * Set Username value
-     * @param string $_username the Username
+     * @param string $_username  Username
      * @return string
      */
     public function setUsername($_username)

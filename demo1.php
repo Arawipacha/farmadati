@@ -54,15 +54,15 @@ $map= collect($map);
 //$getData= $service->GetDataSet(new FarmadatiArgsGetDataSet($user,$password, $codice, Mode::GETRECORDS));
 
 //print_r($getData->getResult()->DescEsito);
-$pathZip="./17082022/APP01.xml";//$getData->save($getData->getResult()->ByteListFile);
+$pathZip="./020220231808/APP01.xml";//$getData->save($getData->getResult()->ByteListFile);
 //var_dump($pathZip);
 
 
 $rows= simplexml_load_file($pathZip);
 
 $dataSet= new GetDataSet(new FarmadatiArgsGetDataSet());
-
-$sql=$dataSet->generateFileSql($pathZip,$arrayField, $map);
+dump($dataSet);
+$sql=$dataSet->generateFileSql($pathZip,$arrayField, $map, 'farmadati');
 
 var_dump($sql);
 return ;
