@@ -3,7 +3,7 @@ namespace Farmadati\args;
 use Farmadati\FarmaDatiSoapClient;
 
 
-class FarmadatiArgsGetDataSet extends FarmaDatiSoapClient{
+class ArgsGetDataSet extends FarmaDatiSoapClient{
     
     public function __construct(
         public $Username = NULL,
