@@ -188,7 +188,7 @@ trait traitBinaryFile{
 
 
 
-    public function generateFileSqlV2($pathXml,$directory, $table, $arrayFields, $schemaDataSet)
+    public function generateFileSqlV2($pathXml,$directory, $table, $arrayFields, $schemaDataSet,$page=null)
     {
         //$rows=file_get_contents($pathXml); 
         $disk=$this->getDisk();
@@ -233,14 +233,14 @@ trait traitBinaryFile{
         if ($aggiornato == 1) {
             //$valuesUpdate = "UPDATE INTO $table($fields) VALUES \n" . implode(",\n", $valuesUpdate) . ";";
             if(count($valuesUpdate)>0){
-                $path="$directory/update.sql";
-                $valuesUpdate= implode("::", $valuesUpdate);
+                $path="$directory/update_$page.sql";
+                $valuesUpdate= implode("\n", $valuesUpdate);
                 $disk->put($path, $valuesUpdate);
                 array_push($paths,$path);
             }
             if(count($valuesInsert)>0){
                 $valuesInsert = "INSERT INTO $table($fields) VALUES \n" . implode(",\n", $valuesInsert) . ";";
-                $pathNew="$directory/insert.sql";
+                $pathNew="$directory/insert_$page.sql";
                 $disk->put($pathNew, $valuesInsert);
                 array_push($paths,$pathNew);
             }

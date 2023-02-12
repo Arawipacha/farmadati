@@ -1,7 +1,7 @@
 <?php
 namespace Farmadati\Get;
 
-use Farmadati\args\FarmadatiArgsGetDataSet;
+use Farmadati\args\ArgsGetDataSet;
 use Farmadati\args\FarmadatiArgsGetDataSetChanges;
 use Farmadati\args\FarmadatiArgsGetEnabledSet;
 use Farmadati\args\FarmadatiArgsGetSchemaDataSet;
@@ -29,10 +29,7 @@ class ServiceGet extends FarmaDatiSoapClient{
             //trigger_error("SOAP Fault: (faultcode: {$fault->faultcode}, faultstring: {$fault->faultstring})", E_USER_ERROR);
         }
         
-        //if (is_soap_fault($get)) {
-        //    trigger_error("SOAP Fault: (faultcode: {$get->faultcode}, faultstring: {$get->faultstring})", E_USER_ERROR);
-        //}
-        var_dump($get??null);
+       
         $re=$this->setResult($get)->GetEnabledDataSetResult;
         //$re=$re->getResult();
         return new GetEnabledDataSet($re);
@@ -45,7 +42,7 @@ class ServiceGet extends FarmaDatiSoapClient{
 
     }
 
-    public function GetDataSet(FarmadatiArgsGetDataSet $_argsGetDataSet): GetDataSet{
+    public function GetDataSet(ArgsGetDataSet $_argsGetDataSet): GetDataSet{
         //var_dump($_argsGetDataSet);
         return new GetDataSet($this->setResult(self::getSoapClient()->GetDataSet($_argsGetDataSet))->GetDataSetResult);
     }

@@ -3,7 +3,7 @@ namespace Farmadati;
 
 use App\Models\XmlData;
 use ErrorException;
-use Farmadati\args\FarmadatiArgsGetDataSet;
+use Farmadati\args\ArgsGetDataSet;
 use Farmadati\args\FarmadatiArgsGetDataSetChanges;
 use Farmadati\args\FarmadatiArgsGetEnabledSet;
 use Farmadati\args\FarmadatiArgsGetSchemaDataSet;
@@ -120,14 +120,21 @@ class Client implements FarmadatiClientInterface {
             if($xmlData->xml_files!=null){
                 return $xmlData->xml_files;
             }
-            $binaryZipData= $this->getDataSetChangesByMode(Mode::GETRECORDS, $xmlData->data_agg_id);
-            //$dataSet= new GetDataSet(new FarmadatiArgsGetDataSet());
+            $itemsPerPage=25000;
+            $numberOfPages = ceil($xmlData->rows / $itemsPerPage);
+            $pathsTemp=collect();
+            for ($page = 0; $page < $numberOfPages; $page++) {
 
-            $directory=$this->formatDateDir($xmlData->data_agg_id);
+                $binaryZipData= $this->getDataSetChangesByMode(Mode::GETRECORDS, $xmlData->data_agg_id,$page+1);
+                $directory=$this->formatDateDir($xmlData->data_agg_id);
 
-            $paths= $this->service->save($binaryZipData, $directory);
+                $paths= $this->service->save($binaryZipData, $directory);
 
+                $pathsTemp->push($paths);
+                //array_push($pathsTemp,$paths);
+            }
             $this->fileableSave($xmlData,$paths,'xml');
+            
 
             return $paths->toArray();
         }
@@ -192,15 +199,16 @@ class Client implements FarmadatiClientInterface {
         }else{
 
             $paths= $xmlData->files->filter(function($item){
-                $split=explode(".",$item);
+                $split=explode(".",$item->path);
                 return 'xml'==$split[1];
             });
-
+            $page=1;
             foreach ($paths as $path) {
-                $values=$this->service->generateFileSqlV2($path, $directory, $table, $schemasToFields, $schemaMap);
+                $values=$this->service->generateFileSqlV2($path->path, $directory, $table, $schemasToFields, $schemaMap,$page);
                 foreach ($values as $value) {
                     $sqlPaths->push($value);    
                 }
+                $page++;
                 //array_push($sqlPaths, $values);
             }
             //$paths=$this->service->generateFileSqlV2($paths,$table, $schemasToFields, $schemaMap);
@@ -346,7 +354,7 @@ EOSQL
     function getDataSetByMode($mode){
         $codiceSetDati= $this->getCodiceSetDati();
 
-        $dataSet=$this->service->GetDataSet(new FarmadatiArgsGetDataSet(
+        $dataSet=$this->service->GetDataSet(new ArgsGetDataSet(
             $this->Username,
             $this->Password,
             $codiceSetDati,
